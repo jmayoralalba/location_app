@@ -18,15 +18,13 @@ class CreateLocationService < ApplicationService
   def add_coordinates(location)
     coordinates = get_coordinates(location)
 
-    location.latitude  = coordinates[:latitude]
-    location.longitude = coordinates[:longitude]
+    location.latitude  = coordinates["lat"]
+    location.longitude = coordinates["lng"]
   end
 
   def get_coordinates(location)
-    #result = GetCoordinatesService.call({ location: location })
+    result = GetCoordinatesService.call({ location: location })
 
-    #return result.success ? result.value : nil
-
-    return { latitude: 30.0, longitude: 30.0 }
+    return result.success ? result.value : nil
   end
 end
