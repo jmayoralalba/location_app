@@ -1,3 +1,7 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  namespace :api do
+    constraints lambda { |request| request.format == :json } do
+      resource :locations, only: [:create]
+    end
+  end
 end
