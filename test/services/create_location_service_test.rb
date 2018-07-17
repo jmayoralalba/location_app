@@ -11,18 +11,21 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
     result = CreateLocationService.call(valid_params.except(:latitude))
 
     assert result.success
+    assert result.value.latitude
   end
 
   test 'location with valid attributes without longitude' do
     result = CreateLocationService.call(valid_params.except(:longitude))
 
     assert result.success
+    assert result.value.longitude
   end
 
   test 'location with valid attributes without latitude and longitude' do
     result = CreateLocationService.call(valid_params.except(:latitude, :longitude))
 
     assert result.success
+    assert result.value.latitude && result.value.longitude
   end
 
   test 'location with invalid attributes' do
