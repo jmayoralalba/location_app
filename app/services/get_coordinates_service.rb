@@ -20,7 +20,7 @@ class GetCoordinatesService < ApplicationService
   private
 
   def encode_address
-    [@location.address.gsub(/\s+/, '+'), @location.postcode, @location.city.gsub(/\s+/, '+'), @location.country.gsub(/\s+/, '+')].join('+')
+    [@location.address, @location.postcode, @location.city, @location.country].join('+').gsub(/\s+/, '+')
   end
 
   def form_url
