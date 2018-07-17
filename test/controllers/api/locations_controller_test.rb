@@ -29,14 +29,14 @@ class Api::LocationsControllerTest < ActionDispatch::IntegrationTest
 
   def valid_params
     {
-      name: 'Name',
-      phone: 'Phone',
-      address: 'Address',
-      postcode: 'Postcode',
-      city: 'City',
-      country: 'Country',
+      name: 'Apple Store Puerta del Sol',
+      phone: '917 69 91 00',
+      address: 'Plaza de la Puerta del Sol, 1',
+      postcode: '28013',
+      city: 'Madrid',
+      country: 'Spain',
       latitude: 40.4169953,
-      longitude: 3.7046471
+      longitude: -3.7046471,
     }
   end
 end
