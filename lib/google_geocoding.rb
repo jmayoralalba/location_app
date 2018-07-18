@@ -9,13 +9,7 @@ class GoogleGeocoding
   end
 
   def get_coordinates
-    result = JSON.parse(open(form_url).read)
-
-    if result["results"].any?
-      result["results"][0]["geometry"]["location"]
-    else
-      nil
-    end
+    JSON.parse(open(form_url).read)
   end
 
   private
