@@ -3,8 +3,9 @@ class GoogleGeocoding
 
   URL = "https://maps.googleapis.com/maps/api/geocode/json?address=ADDRESS&key=API_KEY".freeze
 
-  def initialize(location)
+  def initialize(location, api_key)
     @location = location
+    @api_key  = api_key
   end
 
   def get_coordinates
@@ -24,6 +25,6 @@ class GoogleGeocoding
   end
 
   def form_url
-    URL.gsub('ADDRESS', encode_address)
+    URL.gsub('ADDRESS', encode_address).gsub('API_KEY', @api_key)
   end
 end
