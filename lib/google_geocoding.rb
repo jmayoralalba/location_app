@@ -8,7 +8,7 @@ class GoogleGeocoding
     @api_key = api_key
   end
 
-  def get_coordinates
+  def call
     JSON.parse(open(form_url).read)
   end
 
