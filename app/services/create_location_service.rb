@@ -16,11 +16,11 @@ class CreateLocationService < ApplicationService
   private
 
   def add_coordinates(location)
-    coordinates = GoogleGeocoding.new(LocationAddressDecorator.call(location), Rails.application.credentials.google_api_key).get_coordinates
+    result = GoogleGeocoding.new(LocationAddressDecorator.call(location), Rails.application.credentials.google_api_key).get_coordinates
 
-    if coordinates
-      location.latitude  = coordinates["lat"]
-      location.longitude = coordinates["lng"]
+    if result["results"].any?
+      location.latitude  = result["results"][0]["geometry"]["location"]["lat"]
+      location.longitude = result["results"][0]["geometry"]["location"]["lng"]
     end
   end
 end
