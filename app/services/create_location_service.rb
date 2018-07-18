@@ -16,7 +16,7 @@ class CreateLocationService < ApplicationService
   private
 
   def add_coordinates(location)
-    coordinates = GetCoordinatesService.call({ location: location })
+    coordinates = GoogleGeocoding.new(location).get_coordinates
 
     location.latitude  = coordinates["lat"]
     location.longitude = coordinates["lng"]
