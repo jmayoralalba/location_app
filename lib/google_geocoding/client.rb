@@ -9,7 +9,7 @@ module GoogleGeocoding
       @api_key = api_key
     end
 
-    def call
+    def run
       begin
         JSON.parse(open(form_url).read)
       rescue OpenURI::HTTPError => error
