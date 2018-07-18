@@ -4,17 +4,16 @@ class GetCoordinatesServiceTest < ActiveSupport::TestCase
   test 'valid location' do
     location = locations(:apple_store_puerta_sol)
 
-    result = GetCoordinatesService.call({ location: location })
+    coordinates = GetCoordinatesService.call({ location: location })
 
-    assert result.success
+    assert coordinates["lat"] && coordinates["lng"]
   end
 
   test 'invalid location' do
-    location = locations(:apple_store_puerta_sol)
-    location.address = 'This place does not exist'
+    location = Location.new()
 
-    result = GetCoordinatesService.call({ location: location })
+    coordinates = GetCoordinatesService.call({ location: location })
 
-    assert result.success
+    assert coordinates.nil?
   end
 end

@@ -2,12 +2,12 @@ class Api::LocationsController < ApplicationController
   before_action :load_json_schema
 
   def create
-    result = CreateLocationService.call(@json_params)
+    location = CreateLocationService.call(@json_params)
 
-    if result.success
-      render json: { location: result.value }, status: 201
+    if location.save
+      render json: { location: location }, status: 201
     else
-      render json: { errors: result.errors }, status: 400
+      render json: { errors: location.errors.full_messages }, status: 400
     end
   end
 

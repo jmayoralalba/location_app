@@ -10,21 +10,15 @@ class CreateLocationService < ApplicationService
       add_coordinates(location)
     end
 
-    return ApplicationServiceResult.new(location.save, location, location.errors.full_messages)
+    return location
   end
 
   private
 
   def add_coordinates(location)
-    coordinates = get_coordinates(location)
+    coordinates = GetCoordinatesService.call({ location: location })
 
     location.latitude  = coordinates["lat"]
     location.longitude = coordinates["lng"]
-  end
-
-  def get_coordinates(location)
-    result = GetCoordinatesService.call({ location: location })
-
-    return result.success ? result.value : nil
   end
 end

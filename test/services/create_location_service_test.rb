@@ -2,36 +2,36 @@ require 'test_helper'
 
 class CreateLocationServiceTest < ActiveSupport::TestCase
   test 'location with valid attributes' do
-    result = CreateLocationService.call(valid_params)
+    location = CreateLocationService.call(valid_params)
 
-    assert result.success
+    assert location.save
   end
 
   test 'location with valid attributes without latitude' do
-    result = CreateLocationService.call(valid_params.except(:latitude))
+    location = CreateLocationService.call(valid_params.except(:latitude))
 
-    assert result.success
-    assert result.value.latitude
+    assert location.save
+    assert location.latitude
   end
 
   test 'location with valid attributes without longitude' do
-    result = CreateLocationService.call(valid_params.except(:longitude))
+    location = CreateLocationService.call(valid_params.except(:longitude))
 
-    assert result.success
-    assert result.value.longitude
+    assert location.save
+    assert location.longitude
   end
 
   test 'location with valid attributes without latitude and longitude' do
-    result = CreateLocationService.call(valid_params.except(:latitude, :longitude))
+    location = CreateLocationService.call(valid_params.except(:latitude, :longitude))
 
-    assert result.success
-    assert result.value.latitude && result.value.longitude
+    assert location.save
+    assert location.latitude && location.longitude
   end
 
   test 'location with invalid attributes' do
-    result = CreateLocationService.call(valid_params.merge({ latitude: 'asd' }))
+    location = CreateLocationService.call(valid_params.merge({ latitude: 'asd' }))
 
-    assert_not result.success
+    assert_not location.save
   end
 
   private
