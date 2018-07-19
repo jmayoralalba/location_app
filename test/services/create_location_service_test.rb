@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'minitest/autorun'
+require 'webmock/minitest'
 
 class CreateLocationServiceTest < ActiveSupport::TestCase
   test 'location with valid attributes' do
@@ -9,16 +9,12 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
   end
 
   test 'location with valid attributes without latitude and longitude' do
-    mock = Minitest::Mock.new
-    mock.expect(:run, mock_google_geocoding_json)
+    stub_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?address=Plaza%20de%20la%20Puerta%20del%20Sol,%201%2028013%20Madrid%20Spain&key=" + Rails.application.credentials.google_api_key).to_return(status: 200, body: google_geocoding_response, headers: {})
 
-    GoogleGeocoding::Client.stub :new, mock do
-      location = CreateLocationService.call(valid_params.except(:latitude, :longitude))
+    location = CreateLocationService.call(valid_params.except(:latitude, :longitude))
 
-      assert location.save
-      assert location.latitude && location.longitude
-      assert_mock mock
-    end
+    assert location.save
+    assert location.latitude && location.longitude
   end
 
   test 'location with valid attributes without latitude' do
@@ -34,16 +30,12 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
   end
 
   test 'location with not existent address' do
-    mock = Minitest::Mock.new
-    mock.expect(:run, mock_google_geocoding_json_no_results)
+    stub_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?address=Plaza%20de%20la%20Puerta%20del%20Sol,%201%2028013%20Madrid%20Spain&key=" + Rails.application.credentials.google_api_key).to_return(status: 200, body: google_geocoding_no_results_response, headers: {})
 
-    GoogleGeocoding::Client.stub :new, mock do
-      location = CreateLocationService.call(valid_params.except(:latitude, :longitude))
+    location = CreateLocationService.call(valid_params.except(:latitude, :longitude))
 
-      assert_error location, { latitude: :blank }
-      assert_error location, { longitude: :blank }
-      assert_mock mock
-    end
+    assert_error location, { latitude: :blank }
+    assert_error location, { longitude: :blank }
   end
 
   private
@@ -61,8 +53,8 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
     }
   end
 
-  def mock_google_geocoding_json
-    JSON.parse('{
+  def google_geocoding_response
+    '{
       "results" : [
         {
           "address_components" : [
@@ -130,13 +122,13 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
         }
       ],
       "status" : "OK"
-    }')
+    }'
   end
 
-  def mock_google_geocoding_json_no_results
-    JSON.parse('{
+  def google_geocoding_no_results_response
+    '{
       "results" : [],
       "status" : "ZERO_RESULTS_FOUND"
-    }')
+    }'
   end
 end

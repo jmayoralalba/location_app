@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'minitest/autorun'
+require 'webmock/minitest'
 
 class Api::LocationsControllerTest < ActionDispatch::IntegrationTest
   test '#create with valid parameters' do
@@ -10,16 +10,12 @@ class Api::LocationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#create with valid parameters without latitude and longitude' do
-    mock = Minitest::Mock.new
-    mock.expect(:run, mock_google_geocoding_json)
+    stub_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?address=Plaza%20de%20la%20Puerta%20del%20Sol,%201%2028013%20Madrid%20Spain&key=" + Rails.application.credentials.google_api_key).to_return(status: 200, body: google_geocoding_response, headers: {})
 
-    GoogleGeocoding::Client.stub :new, mock do
-      post api_locations_url, as: :json, params: valid_params.except(:latitude, :longitude)
+    post api_locations_url, as: :json, params: valid_params.except(:latitude, :longitude)
 
-      assert_response 201
-      assert_equal valid_params.merge({ latitude: 40, longitude: -3}), JSON.parse(@response.body)["location"].symbolize_keys.except(:id)
-      assert_mock mock
-    end
+    assert_response 201
+    assert_equal valid_params.merge({ latitude: 40, longitude: -3}), JSON.parse(@response.body)["location"].symbolize_keys.except(:id)
   end
 
   test '#create with invalid json' do
@@ -49,8 +45,8 @@ class Api::LocationsControllerTest < ActionDispatch::IntegrationTest
     }
   end
 
-  def mock_google_geocoding_json
-    JSON.parse('{
+  def google_geocoding_response
+    '{
       "results" : [
         {
           "address_components" : [
@@ -118,6 +114,6 @@ class Api::LocationsControllerTest < ActionDispatch::IntegrationTest
         }
       ],
       "status" : "OK"
-    }')
+    }'
   end
 end
