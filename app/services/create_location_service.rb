@@ -6,7 +6,7 @@ class CreateLocationService < ApplicationService
   def call
     location = Location.new(@location_params)
 
-    if location.latitude.nil? || location.longitude.nil?
+    if location.latitude.nil? && location.longitude.nil?
       add_coordinates(location)
     end
 

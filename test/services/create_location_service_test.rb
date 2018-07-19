@@ -4,33 +4,8 @@ require 'minitest/autorun'
 class CreateLocationServiceTest < ActiveSupport::TestCase
   test 'location with valid attributes' do
     location = CreateLocationService.call(valid_params)
+
     assert location.save
-  end
-
-  test 'location with valid attributes without latitude' do
-    mock = Minitest::Mock.new
-    mock.expect(:run, mock_google_geocoding_json)
-
-    GoogleGeocoding::Client.stub :new, mock do
-      location = CreateLocationService.call(valid_params.except(:latitude))
-
-      assert location.save
-      assert location.latitude
-      mock.verify
-    end
-  end
-
-  test 'location with valid attributes without longitude' do
-    mock = Minitest::Mock.new
-    mock.expect(:run, mock_google_geocoding_json)
-
-    GoogleGeocoding::Client.stub :new, mock do
-      location = CreateLocationService.call(valid_params.except(:longitude))
-
-      assert location.save
-      assert location.longitude
-      mock.verify
-    end
   end
 
   test 'location with valid attributes without latitude and longitude' do
@@ -46,10 +21,16 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
     end
   end
 
-  test 'location with invalid attributes' do
-    location = CreateLocationService.call(valid_params.merge({ latitude: 'asd' }))
+  test 'location with valid attributes without latitude' do
+    location = CreateLocationService.call(valid_params.except(:latitude))
 
-    assert_not location.save
+    assert_error location, { latitude: :blank }
+  end
+
+  test 'location with valid attributes without longitude' do
+    location = CreateLocationService.call(valid_params.except(:longitude))
+
+    assert_error location, { longitude: :blank }
   end
 
   private
