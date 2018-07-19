@@ -33,6 +33,19 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
     assert_error location, { longitude: :blank }
   end
 
+  test 'location with not existent address' do
+    mock = Minitest::Mock.new
+    mock.expect(:run, mock_google_geocoding_json_no_results)
+
+    GoogleGeocoding::Client.stub :new, mock do
+      location = CreateLocationService.call(valid_params.except(:latitude, :longitude))
+
+      assert_error location, { latitude: :blank }
+      assert_error location, { longitude: :blank }
+      mock.verify
+    end
+  end
+
   private
 
   def valid_params
@@ -117,6 +130,13 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
         }
       ],
       "status" : "OK"
+    }')
+  end
+
+  def mock_google_geocoding_json_no_results
+    JSON.parse('{
+      "results" : [],
+      "status" : "ZERO_RESULTS_FOUND"
     }')
   end
 end
