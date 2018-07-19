@@ -17,7 +17,7 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
 
       assert location.save
       assert location.latitude && location.longitude
-      mock.verify
+      assert_mock mock
     end
   end
 
@@ -42,7 +42,7 @@ class CreateLocationServiceTest < ActiveSupport::TestCase
 
       assert_error location, { latitude: :blank }
       assert_error location, { longitude: :blank }
-      mock.verify
+      assert_mock mock
     end
   end
 

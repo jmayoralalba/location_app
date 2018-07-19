@@ -18,7 +18,7 @@ class Api::LocationsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response 201
       assert_equal valid_params.merge({ latitude: 40, longitude: -3}), JSON.parse(@response.body)["location"].symbolize_keys.except(:id)
-      mock.verify
+      assert_mock mock
     end
   end
 
