@@ -23,6 +23,12 @@ class LocationTest < ActiveSupport::TestCase
     assert_error location, { latitude: :greater_than_or_equal_to }
   end
 
+  test 'location without latitude' do
+    location = Location.new(valid_params.except(:latitude))
+
+    assert_error location, { latitude: :blank }
+  end
+
   test 'location with invalid longitude format' do
     location = Location.new(valid_params.merge({ longitude: 'not valid'}))
 
@@ -39,6 +45,12 @@ class LocationTest < ActiveSupport::TestCase
     location = Location.new(valid_params.merge({ longitude: -181}))
 
     assert_error location, { longitude: :greater_than_or_equal_to }
+  end
+
+  test 'location without longitude' do
+    location = Location.new(valid_params.except(:longitude))
+
+    assert_error location, { longitude: :blank }
   end
 
   private
