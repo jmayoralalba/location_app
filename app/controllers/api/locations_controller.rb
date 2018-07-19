@@ -31,10 +31,9 @@ class Api::LocationsController < ApplicationController
 
     @json_params = JSON.parse(request.body.read)
 
-    begin
-      JSON::Validator.validate!(schema, @json_params)
-    rescue JSON::Schema::ValidationError => error
-      render json: { errors: error.message }, status: 400
+    errors = JSON::Validator.fully_validate(schema, @json_params)
+    if errors.any?
+      render json: { errors: errors }, status: 400
     end
   end
 end
