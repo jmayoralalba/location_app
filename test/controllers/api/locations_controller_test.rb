@@ -6,6 +6,7 @@ class Api::LocationsControllerTest < ActionDispatch::IntegrationTest
     post api_locations_url, as: :json, params: valid_params
 
     assert_response 201
+    assert_equal valid_params, JSON.parse(@response.body)["location"].symbolize_keys.except(:id)
   end
 
   test '#create with valid parameters without latitude and longitude' do
@@ -16,6 +17,7 @@ class Api::LocationsControllerTest < ActionDispatch::IntegrationTest
       post api_locations_url, as: :json, params: valid_params.except(:latitude, :longitude)
 
       assert_response 201
+      assert_equal valid_params.merge({ latitude: 40, longitude: -3}), JSON.parse(@response.body)["location"].symbolize_keys.except(:id)
       mock.verify
     end
   end
